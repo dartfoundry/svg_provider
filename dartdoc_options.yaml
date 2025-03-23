@@ -1,0 +1,20 @@
+dartdoc:
+  categories:
+    "Core Classes":
+      - SvgProvider
+    "Configuration":
+      - SvgValidationOptions
+      - SvgValidator
+    "Enums":
+      - SvgSource
+  categoryOrder:
+    - "Core Classes"
+    - "Configuration"
+    - "Enums"
+  showUndocumentedCategories: false
+  linkToSource:
+    root: "."
+    uriTemplate: "https://github.com/dartfoundry/svg_provider/blob/main/%f%#L%l%"
+  exclude:
+    - "dart:async"
+    - "dart:collection"
