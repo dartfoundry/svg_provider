@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: © 2025 Dom Jocubeit <support@dartfoundry.com>
+// SPDX-License-Identifier: Apache-2.0
+
 import 'dart:async';
 import 'dart:io';
 import 'dart:math' as math;

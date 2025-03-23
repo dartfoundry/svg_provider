@@ -2,6 +2,11 @@
 
 ## 1.0.0 (2025-03-23)
 
+### SBOM, License & Copyright
+- Added Software Bill of Materials (SBOM)
+- Added License information
+- Added Copyright information
+
 ### Implemented enhancements:
 
 - Added support for package source option

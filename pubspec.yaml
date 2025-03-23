@@ -5,8 +5,6 @@ repository: https://github.com/dartfoundry/svg_provider
 version: 1.0.0
 publish_to: none
 
-# wQ9nYTgUqBKcmnPDyVj1
-
 platforms:
   android:
   ios:

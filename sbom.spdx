@@ -1,0 +1,46 @@
+SPDXVersion: SPDX-2.2
+DataLicense: CC0-1.0
+SPDXID: SPDXRef-DOCUMENT
+DocumentName: svg_provider
+DocumentNamespace: https://pub.dev/packages/svg_provider
+LicenseListVersion: 3.8
+Creator: Tool: https://pub.dev/packages/sbom
+Created: 2025-03-23T23:41:30Z
+
+
+PackageName: svg-provider
+SPDXID: SPDXRef-Package-svg-provider
+PackageVersion: 1.0.0
+PackageFileName: svg_provider
+PackageSupplier: NOASSERTION
+PackageOriginator: NOASSERTION
+PackageDownloadLocation: https://pub.dev/packages/svg_provider
+FilesAnalyzed: true
+PackageVerificationCode: 46e42740cf8861bc9939486b4bba799cbb2e8716
+PackageHomePage: https://pub.dev/packages/svg_provider
+PackageLicenseConcluded: Apache-2.0
+PackageLicenseInfoFromFiles: NOASSERTION
+PackageLicenseDeclared: NOASSERTION
+PackageCopyrightText: © 2025 Dom Jocubeit <support@dartfoundry.com>
+PackageSummary: <text>SVG Validation and Image Provider</text>
+
+
+FileName: lib/svg_provider.dart
+SPDXID: SPDXRef-svg-provider-0
+FileType: SOURCE
+FileChecksum: SHA1: 2cb0b314df5783b6a9b6afa620f0c4595989b6bb
+LicenseConcluded: Apache-2.0
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: © 2025 Dom Jocubeit <support@dartfoundry.com>
+
+
+FileName: pubspec.yaml
+SPDXID: SPDXRef-pubspec-1
+FileType: TEXT
+FileChecksum: SHA1: 2bc1a40cb1ecaa01dc2a8eabe137893d3bb3d0fc
+LicenseConcluded: NOASSERTION
+LicenseInfoInFile: NOASSERTION
+FileCopyrightText: NOASSERTION
+
+
+Relationship: SPDXRef-pubspec-1 DEPENDENCY_MANIFEST_OF SPDXRef-Package-svg-provider
