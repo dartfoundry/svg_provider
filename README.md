@@ -34,6 +34,8 @@ This implementation, while straightforward, led to quality issues:
 
 The key to fixing these issues was to take control of the rendering process using Flutter's Canvas API. I also improved the package's functionality by adding raw svg string and package asset support, SVG markup validation, and cleaner error handling.
 
+Read the following article to get an in-depth understanding of the solution: [Fixing SVG Rendering Quality in Flutter - A Deep Dive](https://www.dartfoundry.com/blog/fixing-svg-rendering-quality-in-flutter-a-deep-dive).
+
 ## Installation
 
 Add this to your package's pubspec.yaml file:
