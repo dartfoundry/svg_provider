@@ -32,7 +32,7 @@ This implementation, while straightforward, led to quality issues:
 
 ### The Solution
 
-The key to fixing these issues was to take control of the rendering process using Flutter's Canvas API. I also improved the package's functionality by adding better package asset support, SVG markup validation, and cleaner error handling.
+The key to fixing these issues was to take control of the rendering process using Flutter's Canvas API. I also improved the package's functionality by adding raw svg string and package asset support, SVG markup validation, and cleaner error handling.
 
 ## Installation
 
