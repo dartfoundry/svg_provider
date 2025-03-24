@@ -1,0 +1,60 @@
+name: Flutter Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  flutter-tests:
+    name: Run Flutter Tests
+    runs-on: ubuntu-latest
+
+    env:
+      FLUTTER_CHANNEL: master
+      FLUTTER_VERSION: 3.28.0-0.1.pre
+
+    steps:
+      # Step 1: Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Install dependencies (apt packages)
+      - name: Install required libraries
+        run: sudo apt-get update -q -y && sudo apt-get install -y lib32stdc++6
+
+      # Step 3: Set up Flutter
+      - name: Clone Flutter SDK
+        run: |
+          git clone https://github.com/flutter/flutter.git -b $FLUTTER_CHANNEL
+          echo "$(pwd)/flutter/bin" >> $GITHUB_PATH
+
+      - name: Verify Flutter installation
+        run: |
+          flutter --version
+          flutter doctor
+
+      # Step 4: Install Flutter dependencies
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      # Step 5: Run tests with coverage
+      - name: Run Flutter tests
+        run: flutter test --coverage
+
+      # Step 6: Upload coverage as artifact
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage
+          path: coverage/
+
+      # Step 7: Parse and Display Coverage (Optional)
+      - name: Display test coverage
+        run: |
+          if grep -q 'All files.*:.*[0-9]\+\.[0-9]\+%' coverage/lcov.info; then
+            grep 'All files.*:.*[0-9]\+\.[0-9]\+%' coverage/lcov.info
+          else
+            echo "No coverage summary found."
+          fi
