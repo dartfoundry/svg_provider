@@ -1,5 +1,9 @@
 # SVG Provider
 
+[![Pub](https://img.shields.io/pub/v/svg_provider.svg?style=flat-square)](https://pub.dartlang.org/packages/svg_provider)
+[![Flutter Tests](https://github.com/dartfoundry/svg_provider/actions/workflows/flutter-tests.yml/badge.svg)](https://github.com/dartfoundry/svg_provider/actions/workflows/flutter-tests.yml)
+![coverage](coverage.svg)
+
 A Flutter package for efficiently displaying SVG images in your application with support for multiple sources and validation options.
 
 ## Features
