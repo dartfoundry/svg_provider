@@ -247,7 +247,7 @@ try {
 
 ## Copyright
 
-Copyright (c) 2023 Dom Jocubeit
+Copyright (c) 2025 Dom Jocubeit
 
 ## License
 
