@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import 'dart:async';
-import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
@@ -11,6 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
+
+import 'src/platform/io.dart'
+    if (dart.library.html) 'src/platform/web.dart'
+    as platform;
 
 /// Get svg string.
 typedef SvgStringGetter = Future<String?> Function(SvgImageKey key);
@@ -199,13 +202,20 @@ class SvgValidator {
   }
 
   void _validateViewBox(String svg) {
-    final viewBoxMatch = RegExp(r'''viewBox=["\']([-\d\.\s]+)["\']''').firstMatch(svg);
+    final viewBoxMatch = RegExp(
+      r'''viewBox=["\']([-\d\.\s]+)["\']''',
+    ).firstMatch(svg);
 
     if (viewBoxMatch == null) {
       throw ArgumentError('Missing viewBox attribute');
     }
 
-    final values = viewBoxMatch.group(1)!.split(RegExp(r'[\s,]+')).map(double.parse).toList();
+    final values =
+        viewBoxMatch
+            .group(1)!
+            .split(RegExp(r'[\s,]+'))
+            .map(double.parse)
+            .toList();
 
     if (values.length != 4) {
       throw ArgumentError('Invalid viewBox format');
@@ -217,9 +227,13 @@ class SvgValidator {
   }
 
   void _validateDimensions(String svg) {
-    final widthMatch = RegExp(r'''width=["\']([\d\.]+)([a-z%]*)["\'"]''').firstMatch(svg);
+    final widthMatch = RegExp(
+      r'''width=["\']([\d\.]+)([a-z%]*)["\'"]''',
+    ).firstMatch(svg);
 
-    final heightMatch = RegExp(r'''height=["\']([\d\.]+)([a-z%]*)["\'"]''').firstMatch(svg);
+    final heightMatch = RegExp(
+      r'''height=["\']([\d\.]+)([a-z%]*)["\'"]''',
+    ).firstMatch(svg);
 
     if (widthMatch != null) {
       final width = double.parse(widthMatch.group(1)!);
@@ -247,11 +261,15 @@ class SvgValidator {
       }
     }
 
-    final transformMatches = RegExp(r'''transform=["\'](.*?)["\']''').allMatches(svg);
+    final transformMatches = RegExp(
+      r'''transform=["\'](.*?)["\']''',
+    ).allMatches(svg);
 
     for (final match in transformMatches) {
       final transform = match.group(1)!;
-      if (!RegExp(r'''^[a-zA-Z]+\([^)]+\)(?:\s+[a-zA-Z]+\([^)]+\))*$''').hasMatch(transform)) {
+      if (!RegExp(
+        r'''^[a-zA-Z]+\([^)]+\)(?:\s+[a-zA-Z]+\([^)]+\))*$''',
+      ).hasMatch(transform)) {
         throw ArgumentError('Malformed transform attribute: $transform');
       }
     }
@@ -393,7 +411,10 @@ class SvgProvider extends ImageProvider<SvgImageKey> {
   }
 
   static Future<String> getSvgString(SvgImageKey key) async {
-    final validator = key.validationOptions != null ? SvgValidator(key.validationOptions!) : null;
+    final validator =
+        key.validationOptions != null
+            ? SvgValidator(key.validationOptions!)
+            : null;
 
     Future<String> validateAndReturn(String svg) async {
       validator?.validate(svg);
@@ -415,7 +436,9 @@ class SvgProvider extends ImageProvider<SvgImageKey> {
                 .get(Uri.parse(key.path))
                 .timeout(const Duration(seconds: 10));
             if (response.statusCode != 200) {
-              throw Exception('Failed to load network SVG. Status: ${response.statusCode}');
+              throw Exception(
+                'Failed to load network SVG. Status: ${response.statusCode}',
+              );
             }
             return await validateAndReturn(response.body);
           } on TimeoutException {
@@ -426,31 +449,42 @@ class SvgProvider extends ImageProvider<SvgImageKey> {
 
         case SvgSource.asset:
           try {
-            return await validateAndReturn(await rootBundle.loadString(key.path));
+            return await validateAndReturn(
+              await rootBundle.loadString(key.path),
+            );
           } catch (e) {
             throw Exception('Failed to load asset SVG: $e');
           }
 
         case SvgSource.file:
+          if (!platform.fileSourceAvailable()) {
+            throw UnsupportedError(
+              'File operations are not supported on the web platform',
+            );
+          }
           try {
-            final file = File(key.path);
-            if (!await file.exists()) {
-              throw Exception('SVG file not found: ${key.path}');
-            }
-            return await validateAndReturn(await file.readAsString());
+            return await validateAndReturn(
+              await platform.readFileAsString(key.path),
+            );
           } catch (e) {
             throw Exception('Failed to load SVG file: $e');
           }
 
         case SvgSource.package:
           if (key.package == null) {
-            throw ArgumentError('Package parameter is required for SvgSource.package');
+            throw ArgumentError(
+              'Package parameter is required for SvgSource.package',
+            );
           }
           try {
             final packagePath = 'packages/${key.package}/${key.path}';
-            return await validateAndReturn(await rootBundle.loadString(packagePath));
+            return await validateAndReturn(
+              await rootBundle.loadString(packagePath),
+            );
           } catch (e) {
-            throw Exception('Failed to load package SVG from ${key.package}: $e');
+            throw Exception(
+              'Failed to load package SVG from ${key.package}: $e',
+            );
           }
 
         case SvgSource.raw:
@@ -489,7 +523,10 @@ class SvgProvider extends ImageProvider<SvgImageKey> {
       canvas.scale(scale);
       canvas.drawPicture(pictureInfo.picture);
 
-      final image = await recorder.endRecording().toImage(key.pixelWidth, key.pixelHeight);
+      final image = await recorder.endRecording().toImage(
+        key.pixelWidth,
+        key.pixelHeight,
+      );
 
       return ImageInfo(image: image, scale: 1.0);
     } catch (e) {

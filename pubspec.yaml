@@ -1,8 +1,7 @@
 name: svg_provider
-description: SVG Validation and Image Provider
-homepage: https://www.dartfoundry.com
+description: SVG Validation and Image Provider for SVG images from network, asset, file, package or raw string.
 repository: https://github.com/dartfoundry/svg_provider
-version: 1.0.0
+version: 1.0.1
 
 platforms:
   android:

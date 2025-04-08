@@ -26,7 +26,10 @@ class TestAssetBundle extends AssetBundle {
   }
 
   @override
-  Future<T> loadStructuredData<T>(String key, Future<T> Function(String value) parser) async {
+  Future<T> loadStructuredData<T>(
+    String key,
+    Future<T> Function(String value) parser,
+  ) async {
     final data = await load(key);
     return parser(String.fromCharCodes(data.buffer.asUint8List()));
   }
@@ -68,7 +71,9 @@ void main() {
     });
 
     test('throws on invalid viewBox', () {
-      final validator = SvgValidator(const SvgValidationOptions(validateViewBox: true));
+      final validator = SvgValidator(
+        const SvgValidationOptions(validateViewBox: true),
+      );
       final invalidSvg = '''
         <svg xmlns="http://www.w3.org/2000/svg">
           <path d="M0 0h24v24H0z"/>
@@ -78,7 +83,11 @@ void main() {
       expect(
         () => validator.validate(invalidSvg),
         throwsA(
-          isA<ArgumentError>().having((e) => e.message, 'message', 'Missing viewBox attribute'),
+          isA<ArgumentError>().having(
+            (e) => e.message,
+            'message',
+            'Missing viewBox attribute',
+          ),
         ),
       );
     });
@@ -106,7 +115,9 @@ void main() {
     });
 
     test('blocks script elements', () {
-      final validator = SvgValidator(const SvgValidationOptions(validateElements: true));
+      final validator = SvgValidator(
+        const SvgValidationOptions(validateElements: true),
+      );
       final maliciousSvg = '''
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <script>alert('xss')</script>
@@ -143,16 +154,14 @@ void main() {
       ''';
 
       // Setup asset bundle for tests
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMessageHandler(
-        'flutter/assets',
-        (ByteData? message) async {
-          final asset = utf8.decode(message!.buffer.asUint8List());
-          if (testAssetBundle.assets.containsKey(asset)) {
-            return testAssetBundle.assets[asset];
-          }
-          return null;
-        },
-      );
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMessageHandler('flutter/assets', (ByteData? message) async {
+            final asset = utf8.decode(message!.buffer.asUint8List());
+            if (testAssetBundle.assets.containsKey(asset)) {
+              return testAssetBundle.assets[asset];
+            }
+            return null;
+          });
     });
 
     test('loads from asset', () async {
@@ -172,9 +181,14 @@ void main() {
         return validSvg;
       }
 
-      final providerWithGetter = SvgProvider('assets/icon.svg', svgGetter: assetGetter);
+      final providerWithGetter = SvgProvider(
+        'assets/icon.svg',
+        svgGetter: assetGetter,
+      );
 
-      final keyWithGetter = await providerWithGetter.obtainKey(ImageConfiguration.empty);
+      final keyWithGetter = await providerWithGetter.obtainKey(
+        ImageConfiguration.empty,
+      );
       final result = await SvgProvider.getSvgString(keyWithGetter);
       expect(result, equals(validSvg));
     });
@@ -188,7 +202,9 @@ void main() {
       Future<String?> networkGetter(SvgImageKey key) async {
         final response = await mockHttpClient.get(Uri.parse(key.path));
         if (response.statusCode != 200) {
-          throw Exception('Failed to load network SVG. Status: ${response.statusCode}');
+          throw Exception(
+            'Failed to load network SVG. Status: ${response.statusCode}',
+          );
         }
         return response.body;
       }
@@ -206,12 +222,16 @@ void main() {
       expect(result, equals(validSvg));
 
       // Verify the mock was called
-      verify(mockHttpClient.get(Uri.parse('https://example.com/icon.svg'))).called(1);
+      verify(
+        mockHttpClient.get(Uri.parse('https://example.com/icon.svg')),
+      ).called(1);
     });
 
     test('handles network timeout', () async {
       // Use the mockHttpClient to simulate a timeout
-      when(mockHttpClient.get(Uri.parse('https://example.com/icon.svg'))).thenAnswer(
+      when(
+        mockHttpClient.get(Uri.parse('https://example.com/icon.svg')),
+      ).thenAnswer(
         (_) => Future.delayed(
           const Duration(minutes: 1), // Very long delay to ensure timeout
           () => http.Response(validSvg, 200),
@@ -226,7 +246,9 @@ void main() {
               .timeout(const Duration(milliseconds: 10))
               .then((response) {
                 if (response.statusCode != 200) {
-                  throw Exception('Failed to load network SVG. Status: ${response.statusCode}');
+                  throw Exception(
+                    'Failed to load network SVG. Status: ${response.statusCode}',
+                  );
                 }
                 return response.body;
               });
@@ -264,7 +286,9 @@ void main() {
       Future<String?> errorGetter(SvgImageKey key) async {
         final response = await mockHttpClient.get(Uri.parse(key.path));
         if (response.statusCode != 200) {
-          throw Exception('Failed to load network SVG. Status: ${response.statusCode}');
+          throw Exception(
+            'Failed to load network SVG. Status: ${response.statusCode}',
+          );
         }
         return response.body;
       }
@@ -289,7 +313,9 @@ void main() {
       );
 
       // Verify the mock was called
-      verify(mockHttpClient.get(Uri.parse('https://example.com/icon.svg'))).called(1);
+      verify(
+        mockHttpClient.get(Uri.parse('https://example.com/icon.svg')),
+      ).called(1);
     });
 
     test('handles package assets', () async {
@@ -339,7 +365,11 @@ void main() {
     });
 
     test('respects provided size', () async {
-      final provider = SvgProvider(validSvg, source: SvgSource.raw, size: const Size(200, 150));
+      final provider = SvgProvider(
+        validSvg,
+        source: SvgSource.raw,
+        size: const Size(200, 150),
+      );
       final key = await provider.obtainKey(ImageConfiguration.empty);
 
       expect(key.pixelWidth, equals(200));
@@ -347,7 +377,11 @@ void main() {
     });
 
     test('applies color tint', () async {
-      final provider = SvgProvider(validSvg, source: SvgSource.raw, color: Colors.blue);
+      final provider = SvgProvider(
+        validSvg,
+        source: SvgSource.raw,
+        color: Colors.blue,
+      );
       final key = await provider.obtainKey(ImageConfiguration.empty);
 
       expect(key.color, equals(Colors.blue));
@@ -369,7 +403,10 @@ void main() {
 
   group('SvgProvider Error Handling Tests', () {
     test('handles missing package parameter', () async {
-      final provider = SvgProvider('assets/icon.svg', source: SvgSource.package);
+      final provider = SvgProvider(
+        'assets/icon.svg',
+        source: SvgSource.package,
+      );
 
       final key = await provider.obtainKey(ImageConfiguration.empty);
       expect(
@@ -396,7 +433,11 @@ void main() {
       expect(
         () => SvgProvider.getSvgString(key),
         throwsA(
-          isA<Exception>().having((e) => e.toString(), 'message', contains('Missing <svg> tag')),
+          isA<Exception>().having(
+            (e) => e.toString(),
+            'message',
+            contains('Missing <svg> tag'),
+          ),
         ),
       );
     });
@@ -408,7 +449,11 @@ void main() {
       expect(
         () async => await SvgProvider.getSvgString(key),
         throwsA(
-          isA<Exception>().having((e) => e.toString(), 'message', contains('SVG file not found')),
+          isA<Exception>().having(
+            (e) => e.toString(),
+            'message',
+            contains('SVG file not found'),
+          ),
         ),
       );
     });
